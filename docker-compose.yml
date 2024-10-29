@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13 # Versión de PostgreSQL
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: test246 
+      POSTGRES_DB: test 
+    ports:
+      - "5432:5432" # Puerto de la base de datos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistencia de datos
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api_server
+    ports:
+      - "8080:8080" # Puerto de la API
+    depends_on:
+      - db # Asegurarse de que la base de datos esté levantada primero
+    environment:
+      DB_HOST: db # Host de la base de datos
+      DB_USER: postgres # Debe coincidir con el usuario de PostgreSQL
+      DB_PASSWORD: test246 # Debe coincidir con la contraseña de PostgreSQL
+      DB_NAME: test # Debe coincidir con el nombre de la base de datos
+
+volumes:
+  postgres_data: # Volumen para persistir los datos de PostgreSQL
